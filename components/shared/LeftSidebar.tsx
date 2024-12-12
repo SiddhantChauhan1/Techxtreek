@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { SignOutButton, SignedIn, useAuth } from "@clerk/nextjs";
+import { RedirectToSignIn, SignOutButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 
 import { sidebarLinks } from "@/constants";
 
@@ -57,6 +57,11 @@ const LeftSidebar = () => {
             </div>
           </SignOutButton>
         </SignedIn>
+        <SignedOut>
+        <RedirectToSignIn
+          signUpFallbackRedirectUrl="/onboarding"
+        />
+      </SignedOut>
       </div>
     </section>
   );
