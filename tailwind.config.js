@@ -211,4 +211,6 @@ export const theme = {
     },
   },
 };
-export const plugins = [require("tailwindcss-animate")];
+import animate from "tailwindcss-animate";
+
+export const plugins = [animate];
