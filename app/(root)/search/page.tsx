@@ -8,7 +8,7 @@ import Pagination from "@/components/shared/Pagination";
 import { fetchUser, fetchUsers } from "@/lib/actions/user.actions";
 
 async function Page({
-  searchParams,
+  searchParams: rawSearchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
@@ -18,10 +18,15 @@ async function Page({
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  const searchParams = await rawSearchParams; // Await the async `searchParams`
+
+  const page = searchParams?.page ? +searchParams.page : 1;
+  const query = searchParams?.q;
+
   const result = await fetchUsers({
     userId: user.id,
-    searchString: searchParams.q,
-    pageNumber: searchParams?.page ? +searchParams.page : 1,
+    searchString: query,
+    pageNumber: page,
     pageSize: 25,
   });
 

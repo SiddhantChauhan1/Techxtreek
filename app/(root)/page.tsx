@@ -8,7 +8,7 @@ import { fetchPosts } from "@/lib/actions/thread.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
 
 async function Home({
-  searchParams,
+  searchParams: rawSearchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) {
@@ -18,10 +18,10 @@ async function Home({
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  const result = await fetchPosts(
-    searchParams.page ? +searchParams.page : 1,
-    30
-  );
+  const searchParams = await rawSearchParams; // Await the async `searchParams`
+
+  const page = searchParams.page ? +searchParams.page : 1;
+  const result = await fetchPosts(page, 30);
 
   return (
     <>

@@ -10,13 +10,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { fetchUser } from "@/lib/actions/user.actions";
 
-async function Page({ params }: { params: { id: string } }) {
+async function Page({ params: rawParams }: { params: { id: string } }) {
   const user = await currentUser();
   if (!user) return null;
 
+  const params = await rawParams; // Await the params object as per Next.js 15
+  if (!params.id) {
+    redirect("/404"); // Redirect to 404 if id is missing
+  }
+
   const userInfo = await fetchUser(params.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
-
+  
   return (
     <section>
       <ProfileHeader

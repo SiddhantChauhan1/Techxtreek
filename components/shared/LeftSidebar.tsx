@@ -2,15 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { RedirectToSignIn, SignOutButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 
 import { sidebarLinks } from "@/constants";
 
 const LeftSidebar = () => {
-  const router = useRouter();
   const pathname = usePathname();
-
   const { userId } = useAuth();
 
   return (
@@ -21,11 +19,12 @@ const LeftSidebar = () => {
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
 
-          if (link.route === "/profile") link.route = `${link.route}/${userId}`;
+          // Generate route dynamically without mutating the original object
+          const dynamicRoute = link.route === "/profile" ? `/profile/${userId}` : link.route;
 
           return (
             <Link
-              href={link.route}
+              href={dynamicRoute}
               key={link.label}
               className={`leftsidebar_link ${isActive && "bg-primary-500 "}`}
             >
@@ -35,7 +34,6 @@ const LeftSidebar = () => {
                 width={24}
                 height={24}
               />
-
               <p className='text-light-1 max-lg:hidden'>{link.label}</p>
             </Link>
           );
@@ -52,16 +50,13 @@ const LeftSidebar = () => {
                 width={24}
                 height={24}
               />
-
               <p className='text-light-2 max-lg:hidden'>Logout</p>
             </div>
           </SignOutButton>
         </SignedIn>
         <SignedOut>
-        <RedirectToSignIn
-          signUpFallbackRedirectUrl="/onboarding"
-        />
-      </SignedOut>
+          <RedirectToSignIn signUpFallbackRedirectUrl="/onboarding" />
+        </SignedOut>
       </div>
     </section>
   );

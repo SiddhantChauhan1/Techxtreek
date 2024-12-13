@@ -9,15 +9,19 @@ import { fetchThreadById } from "@/lib/actions/thread.actions";
 
 export const revalidate = 0;
 
-async function page({ params }: { params: { id: string } }) {
-  if (!params.id) return null;
+async function page({ params: rawParams }: { params: { id: string } }) {
+  const params = await rawParams;
+  if (!params?.id) return null;
 
+  // Await the current user
   const user = await currentUser();
   if (!user) return null;
 
+  // Fetch user info, and ensure user is onboarded
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  // Fetch the thread by ID
   const thread = await fetchThreadById(params.id);
 
   return (
